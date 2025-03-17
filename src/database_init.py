@@ -1,13 +1,15 @@
 import mysql_connector
 import os
+from crud_operations import CRUD
 
 if __name__ == "__main__":
     connection_info = ["root", "250303", ""]
+    database = "primer"
     connector = mysql_connector.MySQLConnector(*connection_info)
-
-    connector.execute_query("DROP DATABASE IF EXISTS primer")
-    connector.execute_query("CREATE DATABASE IF NOT EXISTS primer")
-    connector.execute_query("USE primer")
+    crud = CRUD(connector)
+    connector.execute_query("DROP DATABASE IF EXISTS " + database)
+    connector.execute_query("CREATE DATABASE IF NOT EXISTS " + database)
+    connector.execute_query("USE " + database)
 
     with open(os.path.join("Data", "orders_combined.csv"), "r") as f:
         columns = f.readline()
@@ -25,7 +27,7 @@ if __name__ == "__main__":
             line = f.readline()
             if line == "":
                 break
-            connector.create(line)
+            crud.insert_row(line)
                  
 
 
