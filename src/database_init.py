@@ -25,11 +25,7 @@ if __name__ == "__main__":
             line = f.readline()
             if line == "":
                 break
-            line = line.split(",")
-            line = ["'" + entry + "'" for entry in line]
-            insert = "INSERT INTO orders_combined VALUES (" + ", ".join(line) + ")"
-            connector.execute_query(insert)
-        connector.commit()
+            connector.create(line)
                  
 
 
