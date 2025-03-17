@@ -27,7 +27,7 @@ if __name__ == "__main__":
                 break
             line = line.split(",")
             line = ["'" + entry + "'" for entry in line]
-            insert = "INSERT INTO orders_combined (" + columns + ") VALUES (" + ", ".join(line) + ")"
+            insert = "INSERT INTO orders_combined VALUES (" + ", ".join(line) + ")"
             connector.execute_query(insert)
         connector.commit()
                  
