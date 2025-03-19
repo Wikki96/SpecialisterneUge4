@@ -1,4 +1,7 @@
-import os
+import os, sys
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(CURRENT_DIR))
+from src.mysql_connector import MySQLConnector
 
 class CRUD:
     """Handles basic queries for the table orders_combined.
@@ -9,20 +12,32 @@ class CRUD:
     update
     delete
     create_database
+    create_table
     Instance variables:
     mysql_connector - an instance of the MySQLConnector class
+    table - the current table being worked on
     """
-    def __init__(self, mysql_connector):
+    def __init__(self, mysql_connector: MySQLConnector):
         """Sets the connection object. 
         Requires a MySQLConnector class as input.
         """
         self.mysql_connector = mysql_connector
+        self.table = "dummy"
 
-    def insert_row(self, row, table="orders_combined"):
+    def select_tables(self, *tables, relations=[]):
+        table = tables[0]
+        for i, (column1, column2) in enumerate(relations):
+            table = table + " INNER JOIN " + tables[i+1] \
+                + " ON " + tables[0] + "." + column1 + " = " \
+                + tables[i+1] + "." + column2 
+        self.table = table
+        return
+
+    def insert_row(self, row):
         """Insert row into table"""
         row = row.split(",")
         row = ["'" + entry + "'" for entry in row]
-        insert = "INSERT INTO "+ table + " VALUES " \
+        insert = "INSERT INTO " + self.table + " VALUES " \
                  + "(" + ", ".join(row) + ")" 
         self.__execute(insert)
         self.mysql_connector.commit()
@@ -30,27 +45,28 @@ class CRUD:
 
     def select_columns(self, columns):
         select = "SELECT " + ", ".join(columns) \
-               + " FROM orders_combined"
+               + " FROM " + self.table
         self.__execute(select)
         data = self.mysql_connector.fetchall()
         return data
     
     def select_name_by_id(self, id):
-        select = "SELECT id, customer_name FROM orders_combined " \
-                 "WHERE id = '" + id + "'"
+        select = "SELECT id, customer_name FROM " + self.table + \
+                 " WHERE id = '" + id + "'"
         self.__execute(select)
         data = self.mysql_connector.fetchall()
         return data
 
     def update(self, what, where):
-        update = "UPDATE orders_combined SET " \
+        update = "UPDATE " + self.table + " SET " \
                + what + " WHERE " + where
         self.__execute(update)
         self.mysql_connector.commit()
         return
     
-    def delete(self, where):
-        delete = "DELETE FROM orders_combined WHERE " + where
+    def delete(self, where, table=""):
+        delete = "DELETE " + table + " FROM " \
+            + self.table + " WHERE " + where
         self.__execute(delete)
         self.mysql_connector.commit()
         return
@@ -65,6 +81,7 @@ class CRUD:
         return
 
     def create_table(self, tablename, tablestructure):
+        """Create table as specified"""
         self.mysql_connector.execute("DROP TABLE IF EXISTS " 
                                      + tablename)
         query = "CREATE TABLE " + tablename + " " + tablestructure

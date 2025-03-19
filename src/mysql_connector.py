@@ -3,9 +3,12 @@ import mysql.connector
 class MySQLConnector:
     def __init__(self, user, password, database):
         try:
-            self.con = mysql.connector.connect(host="localhost", user=user, password=password, database=database)
+            self.con = mysql.connector.connect(
+                host="localhost", user=user, 
+                password=password, database=database)
         except ConnectionError:
             print("Could not connect to database")
+            raise
         self.cursor = self.con.cursor()
 
     def get_con(self):
