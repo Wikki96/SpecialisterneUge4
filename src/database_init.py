@@ -9,7 +9,7 @@ def populate_table(filename, table, crud):
                 line = f.readline()
                 if line == "":
                     break
-                crud.select_tables(table)
+                crud.set_tables(table)
                 crud.insert_row(line)
     return
 

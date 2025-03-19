@@ -72,11 +72,12 @@ class CRUD:
         self.mysql_connector.commit()
         return
     
-    def delete(self, where, table=""):
-        """Delete rows specified by where. When using joins table 
+    def delete(self, column, value, table=""):
+        """Delete rows where column has value. When using join, table 
         specifies which table to delete from
         """
-        delete = f"DELETE {table} FROM {self.table} WHERE {where}"
+        delete = f"""DELETE {table} FROM {self.table} 
+                     WHERE {column} = '{value}'"""
         self.__execute(delete)
         self.mysql_connector.commit()
         return
