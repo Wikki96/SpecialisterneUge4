@@ -4,7 +4,8 @@ sys.path.append(os.path.dirname(CURRENT_DIR))
 from src.mysql_connector import MySQLConnector
 
 class CRUD:
-    """Handles basic queries for the table orders_combined.
+    """Handles basic queries for the database in the given connector. 
+    All methods work on the table stored.
     Public methods:
     insert_row
     select_columns
@@ -24,7 +25,8 @@ class CRUD:
         self.mysql_connector = mysql_connector
         self.table = "dummy"
 
-    def select_tables(self, *tables, relations=[]):
+    def set_tables(self, *tables, relations=[]):
+        """Set the table to use in other methods"""
         table = tables[0]
         for i, (column1, column2) in enumerate(relations):
             table = f"""{table} INNER JOIN {tables[i+1]}  
@@ -33,7 +35,7 @@ class CRUD:
         return
 
     def insert_row(self, row):
-        """Insert row into table"""
+        """Insert row into the selected table"""
         row = row.split(",")
         row = [f"'{entry}'" for entry in row]
         insert = f"INSERT INTO {self.table} VALUES ({", ".join(row)})"
@@ -41,26 +43,39 @@ class CRUD:
         self.mysql_connector.commit()
         return
 
-    def select_columns(self, columns):
-        select = f"SELECT {", ".join(columns)} FROM {self.table}"
-        self.__execute(select)
-        data = self.mysql_connector.fetchall()
-        return data
-    
-    def select_name_by_id(self, id):
-        select = f"""SELECT id, customer_name FROM {self.table}
-                 WHERE id = '{id}'"""
-        self.__execute(select)
+    def __select(self, select_statement):
+        """Execute the selection"""
+        self.__execute(select_statement)
         data = self.mysql_connector.fetchall()
         return data
 
+    def select_all(self):
+        """Return the entire table"""
+        select = f'SELECT * FROM {self.table}'
+        return self.__select(select)
+
+    def select_columns(self, columns):
+        """Return the columns given"""
+        select = f"SELECT {", ".join(columns)} FROM {self.table}"
+        return self.__select(select)
+    
+    def select_name_by_id(self, id):
+        """Return id and name matching the given id"""
+        select = f"""SELECT id, customer_name FROM {self.table}
+                 WHERE id = '{id}'"""
+        return self.__select(select)
+
     def update(self, what, where):
+        """Update the values at where with the information of what"""
         update = f"UPDATE {self.table} SET {what} WHERE {where}"
         self.__execute(update)
         self.mysql_connector.commit()
         return
     
     def delete(self, where, table=""):
+        """Delete rows specified by where. When using joins table 
+        specifies which table to delete from
+        """
         delete = f"DELETE {table} FROM {self.table} WHERE {where}"
         self.__execute(delete)
         self.mysql_connector.commit()

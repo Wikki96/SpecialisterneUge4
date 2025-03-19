@@ -23,7 +23,6 @@ class MySQLConnector:
         return
     
     def fetchall(self):
-        data = self.cursor.fetchall()
-        return data
+        return self.cursor.fetchall()
     
     
