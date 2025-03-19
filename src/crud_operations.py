@@ -27,64 +27,58 @@ class CRUD:
     def select_tables(self, *tables, relations=[]):
         table = tables[0]
         for i, (column1, column2) in enumerate(relations):
-            table = table + " INNER JOIN " + tables[i+1] \
-                + " ON " + tables[0] + "." + column1 + " = " \
-                + tables[i+1] + "." + column2 
+            table = f"""{table} INNER JOIN {tables[i+1]}  
+            ON {tables[0]}.{column1} = {tables[i+1]}.{column2}"""
         self.table = table
         return
 
     def insert_row(self, row):
         """Insert row into table"""
         row = row.split(",")
-        row = ["'" + entry + "'" for entry in row]
-        insert = "INSERT INTO " + self.table + " VALUES " \
-                 + "(" + ", ".join(row) + ")" 
+        row = [f"'{entry}'" for entry in row]
+        insert = f"INSERT INTO {self.table} VALUES ({", ".join(row)})"
         self.__execute(insert)
         self.mysql_connector.commit()
         return
 
     def select_columns(self, columns):
-        select = "SELECT " + ", ".join(columns) \
-               + " FROM " + self.table
+        select = f"SELECT {", ".join(columns)} FROM {self.table}"
         self.__execute(select)
         data = self.mysql_connector.fetchall()
         return data
     
     def select_name_by_id(self, id):
-        select = "SELECT id, customer_name FROM " + self.table + \
-                 " WHERE id = '" + id + "'"
+        select = f"""SELECT id, customer_name FROM {self.table}
+                 WHERE id = '{id}'"""
         self.__execute(select)
         data = self.mysql_connector.fetchall()
         return data
 
     def update(self, what, where):
-        update = "UPDATE " + self.table + " SET " \
-               + what + " WHERE " + where
+        update = f"UPDATE {self.table} SET {what} WHERE {where}"
         self.__execute(update)
         self.mysql_connector.commit()
         return
     
     def delete(self, where, table=""):
-        delete = "DELETE " + table + " FROM " \
-            + self.table + " WHERE " + where
+        delete = f"DELETE {table} FROM {self.table} WHERE {where}"
         self.__execute(delete)
         self.mysql_connector.commit()
         return
     
     def create_database(self, name):
         """Create and use the database 'name'"""
-        self.mysql_connector.execute("DROP DATABASE IF EXISTS "
-                                            + name)
-        self.mysql_connector.execute("CREATE DATABASE " \
-                                            "IF NOT EXISTS " + name)
-        self.mysql_connector.execute("USE " + name)
+        self.mysql_connector.execute(f"DROP DATABASE IF EXISTS {name}")
+        self.mysql_connector.execute(f"""CREATE DATABASE 
+                                     IF NOT EXISTS {name}""")
+        self.mysql_connector.execute(f"USE {name}")
         return
 
     def create_table(self, tablename, tablestructure):
         """Create table as specified"""
-        self.mysql_connector.execute("DROP TABLE IF EXISTS " 
-                                     + tablename)
-        query = "CREATE TABLE " + tablename + " " + tablestructure
+        self.mysql_connector.execute(f"""DROP TABLE IF EXISTS 
+                                     {tablename}""")
+        query = f"CREATE TABLE {tablename} {tablestructure}"
         self.mysql_connector.execute(query)
 
 
