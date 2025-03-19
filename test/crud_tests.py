@@ -10,7 +10,7 @@ if __name__ == "__main__":
     crud = CRUD(connector)
     crud.delete("id = '100'")
     crud.insert_row("100,2025-03-14T15:24:45+01:00,Wendy Lockman,wendy.lockman@yahoo.com,Headphones,339.31143")
-
+    
     data = crud.select_name_by_id("100")
     print(data)
     crud.update("customer_name = 'Johm Smith'", "id = '100'")

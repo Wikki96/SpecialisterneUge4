@@ -11,7 +11,7 @@ class MySQLConnector:
     def get_con(self):
         return self.con
 
-    def execute_query(self, query):
+    def execute(self, query):
         self.cursor.execute(query)
         return
     
