@@ -15,7 +15,7 @@ if __name__ == "__main__":
     
     data = crud.select_name_by_id("100")
     print(data)
-    crud.update("customer_name = 'Johm Smith'", "id = '100'")
+    crud.update("customer_name", "John Smith", "id", "100")
     data = crud.select_name_by_id("100")
     crud.delete("id", "100")
     print(data)
@@ -33,7 +33,7 @@ if __name__ == "__main__":
                        , relations=relations)
     data = crud.select_name_by_id("100")
     print(data)
-    crud.update("customer_name = 'Johm Smith'", "id = '100'")
+    crud.update("customer_name", "John Smith", "id", "100")
     data = crud.select_name_by_id("100")
     crud.delete("orders.id", "100", table="orders")
     print(data)

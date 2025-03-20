@@ -6,8 +6,8 @@ class MySQLConnector:
             self.con = mysql.connector.connect(
                 host="localhost", user=user, 
                 password=password, database=database)
-        except ConnectionError:
-            print("Could not connect to database")
+        except mysql.connector.errors.InterfaceError:
+            print("Oh no!")
             raise
         self.cursor = self.con.cursor()
 
@@ -16,13 +16,9 @@ class MySQLConnector:
 
     def execute(self, query):
         self.cursor.execute(query)
-        return
-    
-    def commit(self):
+        data = self.cursor.fetchall()
         self.con.commit()
-        return
-    
-    def fetchall(self):
-        return self.cursor.fetchall()
+        return data
+
     
     
