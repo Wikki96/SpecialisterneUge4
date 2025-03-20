@@ -1,10 +1,10 @@
 import mysql.connector
 
 class MySQLConnector:
-    def __init__(self, user, password, database):
+    def __init__(self, host, user, password, database):
         try:
             self.con = mysql.connector.connect(
-                host="localhost", user=user, 
+                host=host, user=user, 
                 password=password, database=database)
         except mysql.connector.errors.InterfaceError:
             print("Oh no!")

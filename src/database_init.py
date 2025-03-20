@@ -1,6 +1,7 @@
 import mysql_connector
 import os
 from crud_operations import CRUD
+from load_config import load_config
 
 def populate_table(filename, table, crud):
     with open(os.path.join("Data", filename), "r") as f:
@@ -14,12 +15,11 @@ def populate_table(filename, table, crud):
     return
 
 if __name__ == "__main__":
-    connection_info = ["root", "250303", ""]
-    database_name = "combined"
+    config = load_config()
     combined_connector = mysql_connector.MySQLConnector(
-         *connection_info)
+         config["host"], config["user"], config["pw"], "")
     combined_crud = CRUD(combined_connector)
-    combined_crud.create_database(database_name)
+    combined_crud.create_database(config["database1"])
     combined_crud.create_table(
         "orders_combined",
         """(id INTEGER NOT NULL,
@@ -33,10 +33,11 @@ if __name__ == "__main__":
     )
     populate_table("orders_combined.csv", "orders_combined", 
                    combined_crud)
-    database_name = "split"
-    split_connector = mysql_connector.MySQLConnector(*connection_info)
+    split_connector = mysql_connector.MySQLConnector(host=
+         config["host"], user=config["user"], 
+         password=config["pw"], database="")
     split_crud = CRUD(split_connector)
-    split_crud.create_database(database_name)
+    split_crud.create_database(config["database2"])
     split_crud.create_table(
         "customers",
         """(customer_id INTEGER NOT NULL,
