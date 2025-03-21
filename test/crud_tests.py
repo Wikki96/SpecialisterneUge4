@@ -18,6 +18,7 @@ if __name__ == "__main__":
     print(data)
     crud.update("product_name", "Mouse", "id", "100")
     data = crud.select_product_by_order("100")
+    crud.delete("id", "100")
     print(data)
 
     connector = MySQLConnector(config["database2"])
@@ -28,13 +29,15 @@ if __name__ == "__main__":
                        relations=relations)
     crud.set_tables("orders")
     crud.delete("id", "100")
-    crud.insert_row("100,2025-03-14T15:24:45+01:00,0,3")
+    crud.insert_row("100,2025-03-14T15:24:45+01:00,0,6")
     crud.set_tables("orders", "products", "customers",
                     relations=relations)
     data = crud.select_product_by_order("100")
     print(data)
     crud.set_tables("orders")
-    crud.update("product_id", "Mouse", "id", "100")
+    crud.update("product_id", "3", "id", "100")
+    crud.set_tables("orders", "products", "customers",
+                    relations=relations)
     data = crud.select_product_by_order("100")
     crud.delete("id", "100", table="orders")
     print(data)
