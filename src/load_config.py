@@ -1,5 +1,6 @@
 
 def load_config() -> list[str]:
+    """Load and return the config"""
     try: f = open("config.txt", "r")
     except PermissionError:
         print("Could not access config.txt")

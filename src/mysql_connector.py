@@ -1,18 +1,21 @@
 import mysql.connector
+import os, sys
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(CURRENT_DIR))
+from src.load_config import load_config
 
 class MySQLConnector:
-    def __init__(self, host, user, password, database):
-        try:
-            self.con = mysql.connector.connect(
-                host=host, user=user, 
-                password=password, database=database)
-        except mysql.connector.errors.InterfaceError:
-            print("Oh no!")
-            raise
+    """A wrapper for the mysql connector creating a cursor and 
+    handling queries with one method.
+    Public methods:
+    execute
+    """
+    def __init__(self, database=""):
+        config = load_config()
+        self.con = mysql.connector.connect(
+            host=config["host"], user=config["user"], 
+            password=config["pw"], database=database)
         self.cursor = self.con.cursor()
-
-    def get_con(self):
-        return self.con
 
     def execute(self, query):
         self.cursor.execute(query)

@@ -58,9 +58,9 @@ class CRUD:
         select = f"SELECT {", ".join(columns)} FROM {self.table}"
         return self.__select(select)
     
-    def select_name_by_id(self, id):
+    def select_product_by_order(self, id):
         """Return id and name matching the given id."""
-        select = f"""SELECT id, customer_name FROM {self.table}
+        select = f"""SELECT id, product_name FROM {self.table}
                  WHERE id = '{id}'"""
         return self.__select(select)
 
@@ -89,7 +89,7 @@ class CRUD:
         self.mysql_connector.execute(f"""CREATE DATABASE 
                                      IF NOT EXISTS {name}""")
         self.mysql_connector.execute(f"USE {name}")
-        return
+        return 
 
     def create_table(self, tablename, tablestructure):
         """Create a table as specified."""
