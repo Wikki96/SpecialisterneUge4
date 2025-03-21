@@ -18,13 +18,9 @@ class CombinedCrud(BaseCrud):
         
         select = f"""SELECT product_price FROM {self.table} 
                  WHERE product_name = '{product_name}' LIMIT 1"""
-        product_price, = self.select(select)
+        product_price, = self.execute(select)
         self.update("product_name", product_name, 
                     "id", order_id)
         self.update("product_price", product_price[0], "id", order_id)
         return
     
-    def select_order_by_customer(self, customer_name):
-        select = f"""SELECT id FROM {self.table} 
-                 WHERE customer_name = '{customer_name}'"""
-        return self.select(select)

@@ -2,9 +2,8 @@ from src.crud_mode import CrudMode
 
 
 class BaseCrud(CrudMode):
-    def select(self, select_statement):
-        """Execute the selection and return a list with the data."""
-        return self.__execute(select_statement)
+
+    table: str
     
     def update(self, column, new_value, condition_column, 
                condition_value, comparator="="):
@@ -13,8 +12,8 @@ class BaseCrud(CrudMode):
         """
         update = f"""UPDATE {self.table} SET {column} = '{new_value}' 
                  WHERE {condition_column} {comparator} '{condition_value}'"""
-        self.__execute(update)
+        self.execute(update)
         return
 
-    def __execute(self, query):
+    def execute(self, query):
         return self.mysql_connector.execute(query)

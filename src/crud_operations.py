@@ -36,30 +36,26 @@ class CRUD:
         self.__execute(insert)
         return
 
-    def __select(self, select_statement):
-        """Execute the selection and return a list with the data."""
-        return self.__execute(select_statement)
-
     def select_all(self):
         """Return the entire table."""
         select = f'SELECT * FROM {self.table}'
-        return self.__select(select)
+        return self.__execute(select)
 
     def select_columns(self, columns):
         """Return the columns given."""
         select = f"SELECT {", ".join(columns)} FROM {self.table}"
-        return self.__select(select)
+        return self.__execute(select)
     
     def select_order_by_customer(self, customer_name):
         select = f"""SELECT id FROM {self.table} 
-                 WHERE customer_name = {customer_name}"""
-        return self.__select(select)
+                 WHERE customer_name = '{customer_name}'"""
+        return self.__execute(select)
 
     def select_product_by_order(self, id):
         """Return the product matching the given order id."""
         select = f"""SELECT product_name, product_price FROM {self.table}
                  WHERE id = '{id}'"""
-        return self.__select(select)
+        return self.__execute(select)
     
     def update_product_bought(self, customer_name, product_name):
         self.crud_mode.update_product_bought(customer_name, product_name)

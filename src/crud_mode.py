@@ -11,8 +11,3 @@ class CrudMode:
     def update_product_bought():
         pass
     
-    def select_product_by_order():
-        pass
-    
-    def select_order_by_customer():
-        pass

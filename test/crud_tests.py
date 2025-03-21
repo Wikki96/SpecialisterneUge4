@@ -25,7 +25,7 @@ if __name__ == "__main__":
     connector = MySQLConnector(config["database2"])
     split_crud = CRUD(SplitCrud(connector))
     split_crud.delete("id", "100", table="orders")
-    split_crud.insert_row("100,2025-03-14T15:24:45+01:00,23,0", "orders")
+    split_crud.insert_row("100,2025-03-14T15:24:45+01:00,23,7", "orders")
     data = split_crud.select_product_by_order("100")
     print(data)
     split_crud.update_product_bought("100", "Mouse")

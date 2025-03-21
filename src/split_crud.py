@@ -30,7 +30,7 @@ class SplitCrud(BaseCrud):
     def __select_product_id(self, product_name):
         select = f"""SELECT product_id FROM products 
                  WHERE product_name = '{product_name}'"""
-        return self.select(select)
+        return self.execute(select)
 
     def update_product_bought(self, order_id, product_name):
         self.set_tables_all()
@@ -38,9 +38,3 @@ class SplitCrud(BaseCrud):
         self.set_tables("orders")
         self.update("product_id", product_id[0], "id", order_id,)
         return
-    
-    def select_order_by_customer(self, customer_name):
-        self.set_tables_all()
-        select = f"""SELECT id FROM {self.table} 
-                 WHERE customer_name = '{customer_name}'"""
-        return self.select(select)
