@@ -2,6 +2,7 @@ import os, sys
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
 from src.mysql_connector import MySQLConnector
+from src.crud_mode import CrudMode
 
 class CRUD:
     """Handles basic queries for the database in the given connector. 
@@ -20,27 +21,18 @@ class CRUD:
     mysql_connector - an instance of the MySQLConnector class
     table - the current table being worked on
     """
-    def __init__(self, mysql_connector: MySQLConnector):
-        """Sets the connection object. 
-        Requires a MySQLConnector class as input.
-        """
-        self.mysql_connector: MySQLConnector = mysql_connector
-        self.table = "dummy"
 
-    def set_tables(self, *tables, relations: list = []):
-        """Set the table to use in other methods."""
-        table = tables[0]
-        for i, (column1, column2) in enumerate(relations):
-            table = f"""{table} INNER JOIN {tables[i+1]}  
-            ON {tables[0]}.{column1} = {tables[i+1]}.{column2}"""
-        self.table = table
-        return
+    def __init__(self, crud_mode: CrudMode):
+        """Sets the connection object and crud mode"""
+        self.mysql_connector: MySQLConnector = crud_mode.mysql_connector
+        self.crud_mode: CrudMode = crud_mode
+        self.table: str = crud_mode.set_tables_all()
 
-    def insert_row(self, row):
+    def insert_row(self, row, table):
         """Insert row into the selected table."""
         row = row.split(",")
         row = [f"'{entry}'" for entry in row]
-        insert = f"INSERT INTO {self.table} VALUES ({", ".join(row)})"
+        insert = f"INSERT INTO {table} VALUES ({", ".join(row)})"
         self.__execute(insert)
         return
 
@@ -58,20 +50,19 @@ class CRUD:
         select = f"SELECT {", ".join(columns)} FROM {self.table}"
         return self.__select(select)
     
-    def select_product_by_order(self, id):
-        """Return id and name matching the given id."""
-        select = f"""SELECT id, product_name FROM {self.table}
-                 WHERE id = '{id}'"""
+    def select_order_by_customer(self, customer_name):
+        select = f"""SELECT id FROM {self.table} 
+                 WHERE customer_name = {customer_name}"""
         return self.__select(select)
 
-    def update(self, column, new_value, condition_column, 
-               condition_value, comparator="="):
-        """Update the values in column to new_value if it 
-        fulfills the condition.
-        """
-        update = f"""UPDATE {self.table} SET {column} = '{new_value}' 
-                 WHERE {condition_column} {comparator} '{condition_value}'"""
-        self.__execute(update)
+    def select_product_by_order(self, id):
+        """Return the product matching the given order id."""
+        select = f"""SELECT product_name, product_price FROM {self.table}
+                 WHERE id = '{id}'"""
+        return self.__select(select)
+    
+    def update_product_bought(self, customer_name, product_name):
+        self.crud_mode.update_product_bought(customer_name, product_name)
         return
     
     def delete(self, column, value, table=""):
@@ -97,7 +88,6 @@ class CRUD:
                                      {tablename}""")
         query = f"CREATE TABLE {tablename} {tablestructure}"
         self.mysql_connector.execute(query)
-
 
     def __execute(self, query):
         return self.mysql_connector.execute(query)

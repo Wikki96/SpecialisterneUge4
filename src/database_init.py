@@ -2,6 +2,8 @@ import mysql_connector
 import os
 from crud_operations import CRUD
 from load_config import load_config
+from src.combined_crud import CombinedCrud
+from src.split_crud import SplitCrud
 
 def populate_table(filename, table, crud: CRUD):
     """Fill the table with the values in the csv file"""
@@ -11,14 +13,13 @@ def populate_table(filename, table, crud: CRUD):
                 line = f.readline()
                 if line == "":
                     break
-                crud.set_tables(table)
-                crud.insert_row(line)
+                crud.insert_row(line, table)
     return
 
 if __name__ == "__main__":
     config = load_config()
     combined_connector = mysql_connector.MySQLConnector()
-    combined_crud = CRUD(combined_connector)
+    combined_crud = CRUD(CombinedCrud(combined_connector))
     combined_crud.create_database(config["database1"])
     combined_crud.create_table(
         "orders_combined",
@@ -34,7 +35,7 @@ if __name__ == "__main__":
     populate_table("orders_combined.csv", "orders_combined", 
                    combined_crud)
     split_connector = mysql_connector.MySQLConnector()
-    split_crud = CRUD(split_connector)
+    split_crud = CRUD(SplitCrud(split_connector))
     split_crud.create_database(config["database2"])
     split_crud.create_table(
         "customers",
