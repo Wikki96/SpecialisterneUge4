@@ -1,5 +1,5 @@
 host: localhost
 user: root
-pw: 250303
+pw:
 database1: combined
 database2: split
